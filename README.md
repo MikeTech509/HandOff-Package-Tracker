@@ -2,22 +2,56 @@
 
 A Java package tracker for front-desk mailrooms. Log arrivals from any carrier, search by name or tracking number, and mark packages as picked up.
 
+Built as a self-taught learning project — one concept, one commit at a time.
+
 ---
 
-## About the Project
+## About
 
-Front desks handle packages from every direction — Amazon, UPS, FedEx, USPS, DHL, and more. When someone asks "did my package arrive?", staff shouldn't be digging through a stack of boxes or a paper log. Handoff is a lightweight console app that keeps everything organized in one place: who the package is for, where it's stored, when it arrived, and whether it's been picked up.
+Front desks handle packages from every direction — Amazon, UPS, FedEx, USPS, and more. When someone asks *"did my package arrive?"*, staff shouldn't be digging through boxes or a paper log.
 
-Built as a real tool for a small business (under 20 packages per day), Handoff prioritizes simplicity over complexity. It runs on any computer with Java installed and requires no setup, no database, and no internet connection.
+Handoff is a lightweight console app that keeps everything in one place: who the package is for, where it's stored, when it arrived, and whether it's been picked up. Built for a real small-business need (under 20 packages/day). No database, no internet, no setup.
 
 ## Features
 
-- **Log packages** with recipient name, tracking number, carrier, date received, and physical location
-- **Search by recipient** with partial, case-insensitive matching (typing "rob" finds "Roberto")
-- **Search by tracking number** with the same flexible matching
-- **Mark packages as picked up** to close out deliveries
-- **View pending pickups** — see only what's still waiting
-- **View all packages** — full inventory at a glance
-- **Interactive menu** — no commands to memorize; pick an option and go
+- Log packages with recipient, tracking number, carrier, date, and location
+- Search by recipient name (partial, case-insensitive — `"rob"` finds `"Roberto"`)
+- Search by tracking number
+- Mark packages as picked up
+- View pending pickups only
+- Persistent storage — packages survive across sessions
+- Input validation — the app refuses empty or malformed data
+- Cross-platform — runs on Mac and Windows
 
-## How It Works
+## Getting Started
+
+Requires Java 17 or newer.
+
+    git clone https://github.com/MikeTech509/HandOff-Package-Tracker.git
+    cd HandOff-Package-Tracker
+    javac HandoffPacketTracker.java
+    java HandoffPacketTracker
+
+## Roadmap
+
+**Done**
+- [x] Full workflow (add, search, mark, view)
+- [x] File persistence (CSV save + load)
+- [x] Cross-platform file paths
+- [x] Encapsulation with getters, setters, and validation
+
+**Next**
+- [ ] Input-layer re-prompts on invalid data
+- [ ] Constructor for cleaner Parcel creation
+- [ ] Proper date handling
+- [ ] Delete a package
+- [ ] Inheritance (special package types)
+- [ ] SQLite backend
+
+## About the Author
+
+Built by Miketchly-zar Francois — self-taught developer learning by building real projects. Handoff is written and understood line by line, with guidance from Claude (Anthropic's AI) as a tutor. Concepts explained, code shipped.
+
+---
+
+*Small tool. Real problem. Built to be used.*
