@@ -40,6 +40,16 @@ Requires Java 17 or newer.
 - [x] Cross-platform file paths
 - [x] Encapsulation with getters, setters, and validation
 
+## Project Structure
+
+```
+src/
+├── HandoffPacketTracker.java   Main entry point + menu loop
+├── PackageService.java         Package operations (add, search, mark, filter)
+├── FileStorage.java            CSV save/load logic
+└── Parcel.java                 The Parcel data class
+```
+
 **Next**
 - [ ] Input-layer re-prompts on invalid data
 - [ ] Constructor for cleaner Parcel creation
@@ -47,6 +57,7 @@ Requires Java 17 or newer.
 - [ ] Delete a package
 - [ ] Inheritance (special package types)
 - [ ] SQLite backend
+
 
 ## About the Author
 

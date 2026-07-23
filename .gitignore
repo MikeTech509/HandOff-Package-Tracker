@@ -16,3 +16,4 @@ target/
 # IntelliJ / other IDE files
 .idea/
 *.iml
+data/
