@@ -6,7 +6,7 @@
  * and delegates each user action to {@link PackageService} or
  * {@link FileStorage}. Runs until the user chooses to quit.
  *
- * @author Mike Francis
+ * @author Miketchly-Zar Jean-Francois
  */
 
 
