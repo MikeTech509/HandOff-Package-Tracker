@@ -21,7 +21,7 @@ Handoff is a lightweight console app that keeps everything in one place: who the
 - View pending pickups only
 - Persistent storage — packages survive across sessions
 - Input validation — the app refuses empty or malformed data
-- Cross-platform — runs on Mac and Windows
+- Cross-platform — runs on Mac and Windows too
 
 ## Getting Started
 
@@ -66,4 +66,5 @@ Built by Miketchly-zar Francois — self-taught developer learning by building r
 ---
 
 *Small tool. Real problem. Built to be used.*
-Last updated: July 23, 2026
+Last updated: July 24, 2026
+Now works on Windows too!
