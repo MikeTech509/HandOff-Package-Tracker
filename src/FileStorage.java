@@ -34,7 +34,9 @@ public static void savePackages(ArrayList<Parcel> packages) {
                            p.getDateReceived() + "," +
                            p.getLocation() + "," +
                            p.isPickedUp() + "," +
-                           (p instanceof FragilePackage ? "fragile" : "regular"));
+                           (p instanceof FragilePackage ? "fragile" 
+                            : p instanceof LargePackage ? "large" 
+                            :"regular"));
         }
         writer.close();
         System.out.println("Saved " + packages.size() + " packages to handoff_data.csv");
@@ -55,10 +57,20 @@ public static void loadPackages(ArrayList<Parcel> packages) {
             String line = fileReader.nextLine();
             String[] parts = line.split(",");
 
-            // ← THIS IS THE PART THAT NEEDS TO BE THERE
+            
             Parcel p;
-            if (parts.length >= 7 && parts[6].equals("fragile")) {
-                p = new FragilePackage();
+            if(parts.length >= 7) {
+                switch(parts[6]) {
+                    case "fragile":
+                        p = new FragilePackage();
+                        break;
+                    case "large":
+                        p = new LargePackage();
+                        break;
+                    default:
+                        p = new Parcel();
+                        break;
+                }
             } else {
                 p = new Parcel();
             }
