@@ -23,67 +23,60 @@ public class FileStorage {
 
     static final String DATA_FILE = "data/handoff_data.csv";
 
-    public static void savePackages(ArrayList<Parcel> packages){
-    
-   try{
-    new File("data").mkdirs();
-    PrintWriter writer = new PrintWriter(new FileWriter(DATA_FILE));
-    for(Parcel p: packages){
-        writer.println(p.getRecipientName()  + "," +
-                       p.getTrackingNumber() + "," +
-                       p.getCarrier()        + "," +
-                       p.getDateReceived()   + "," +
-                       p.getLocation()       + "," +
-                       p.isPickedUp()
-        );
+public static void savePackages(ArrayList<Parcel> packages) {
+    try {
+        new File("data").mkdirs();
+        PrintWriter writer = new PrintWriter(new FileWriter(DATA_FILE));
+        for (Parcel p : packages) {
+            writer.println(p.getRecipientName() + "," +
+                           p.getTrackingNumber() + "," +
+                           p.getCarrier() + "," +
+                           p.getDateReceived() + "," +
+                           p.getLocation() + "," +
+                           p.isPickedUp() + "," +
+                           (p instanceof FragilePackage ? "fragile" : "regular"));
+        }
+        writer.close();
+        System.out.println("Saved " + packages.size() + " packages to handoff_data.csv");
+    } catch (IOException e) {
+        System.out.println("Error Message: " + e.getMessage());
     }
-
-    writer.close();
-    System.out.println("Saved " + packages.size() + " packages to handoff_data.csv");
-
-   } 
-   
-   catch(IOException e){
-    System.out.println("Error Message: " + e.getMessage());
-   }
 }
 
-public static void loadPackages(ArrayList<Parcel> packages){
+public static void loadPackages(ArrayList<Parcel> packages) {
     File file = new File(DATA_FILE);
-
-    if(!file.exists()){
+    if (!file.exists()) {
         System.out.println("Starting fresh! No saved data found.");
         return;
     }
-    try{
+    try {
         Scanner fileReader = new Scanner(file);
+        while (fileReader.hasNextLine()) {
+            String line = fileReader.nextLine();
+            String[] parts = line.split(",");
 
-        while(fileReader.hasNextLine()){
-        String line = fileReader.nextLine();
-        String[] parts = line.split(",");
+            // ← THIS IS THE PART THAT NEEDS TO BE THERE
+            Parcel p;
+            if (parts.length >= 7 && parts[6].equals("fragile")) {
+                p = new FragilePackage();
+            } else {
+                p = new Parcel();
+            }
 
-        Parcel p = new Parcel();
-        p.setRecipientName(parts[0]); 
-        p.setTrackingNumber(parts[1]);
-        p.setCarrier(parts[2]);
-        p.setDateReceived(parts[3]);
-        p.setLocation(parts[4]);
-        p.setPickedUp(Boolean.parseBoolean(parts[5]));
+            p.setRecipientName(parts[0]);
+            p.setTrackingNumber(parts[1]);
+            p.setCarrier(parts[2]);
+            p.setDateReceived(parts[3]);
+            p.setLocation(parts[4]);
+            p.setPickedUp(Boolean.parseBoolean(parts[5]));
 
-        packages.add(p);
+            packages.add(p);
         }
-
         fileReader.close();
         System.out.println("Loaded " + packages.size() + " from disk.");
-
-    } 
-    catch (FileNotFoundException e){
-
+    } catch (FileNotFoundException e) {
         System.out.println("Error loading: " + e.getMessage());
     }
-
-    
-
 }
 
 }

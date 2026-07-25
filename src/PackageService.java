@@ -87,7 +87,19 @@ public static void  markAsPickedUp(Scanner info, ArrayList<Parcel> packages){
     String input = info.nextLine();
     boolean pickedUp = input.equalsIgnoreCase("yes");
 
-    Parcel currentParcel = new Parcel();
+    // Ask the user whether the package is fragile
+    System.out.print("Is the package fragile? (yes/no): "); 
+    String fragileInput = info.nextLine();
+    boolean isFragile = fragileInput.equalsIgnoreCase("yes");
+    
+    Parcel currentParcel;
+
+    if(isFragile)
+        currentParcel = new FragilePackage();
+     else
+        currentParcel = new Parcel();
+
+     
     currentParcel.setRecipientName(myRecipientName);
     currentParcel.setTrackingNumber(myTrackingNumber);
     currentParcel.setCarrier(myCarrier);
