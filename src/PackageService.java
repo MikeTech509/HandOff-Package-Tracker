@@ -92,6 +92,7 @@ public static void  markAsPickedUp(Scanner info, ArrayList<Parcel> packages){
     System.out.println(" 1 = Regular");
     System.out.println(" 2 = Fragile");
     System.out.println(" 3 = Large");
+    System.out.println(" 4 Fragile and Large");
     System.out.println(" Enter type (1-3): ");
     String typeInput = info.nextLine();
 
@@ -103,9 +104,11 @@ public static void  markAsPickedUp(Scanner info, ArrayList<Parcel> packages){
         case "3":
             currentParcel = new LargePackage();
             break;
+        case "4":
+            currentParcel = new FragileLargePackage();
+            break;
         default:
             currentParcel = new Parcel();
-            break;
     }
 
     currentParcel.setRecipientName(myRecipientName);

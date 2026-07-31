@@ -1,9 +1,9 @@
-public class LargePackage extends Parcel {
+public class LargePackage extends Parcel implements Large {
 
     @Override
     public void displayInfo(){
         super.displayInfo();
-        System.out.println("📦 LARGE — FLOOR STORAGE REQUIRED");
+        showLargeWarning();
     } 
     
 }

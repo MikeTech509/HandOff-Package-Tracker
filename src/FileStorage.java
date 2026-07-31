@@ -34,7 +34,8 @@ public static void savePackages(ArrayList<Parcel> packages) {
                            p.getDateReceived() + "," +
                            p.getLocation() + "," +
                            p.isPickedUp() + "," +
-                           (p instanceof FragilePackage ? "fragile" 
+                           (p instanceof FragileLargePackage ? "fragile-large" 
+                            : p instanceof FragilePackage ? "fragile"
                             : p instanceof LargePackage ? "large" 
                             :"regular"));
         }
@@ -66,6 +67,9 @@ public static void loadPackages(ArrayList<Parcel> packages) {
                         break;
                     case "large":
                         p = new LargePackage();
+                        break;
+                    case "fragile-large":
+                        p = new FragileLargePackage();
                         break;
                     default:
                         p = new Parcel();
