@@ -20,6 +20,16 @@ public class Parcel {
     private String location;
     private boolean isPickedUp;
 
+    public Parcel(String recipientName, String trackingNumber, String carrier, String dateReceived, String location, boolean isPickedUp){
+        setRecipientName(recipientName);
+        setTrackingNumber(trackingNumber);
+        setCarrier(carrier);
+        setDateReceived(dateReceived);
+        setLocation(location);
+        setPickedUp(isPickedUp);    
+    }
+
+
     public String getRecipientName(){
         return recipientName;
     }

@@ -58,35 +58,26 @@ public static void loadPackages(ArrayList<Parcel> packages) {
             String line = fileReader.nextLine();
             String[] parts = line.split(",");
 
-            
+            boolean pickedUp = Boolean.parseBoolean(parts[5]); 
+            String type = parts.length >= 7 ? parts [6] : "regular"; 
+        
             Parcel p;
-            if(parts.length >= 7) {
-                switch(parts[6]) {
-                    case "fragile":
-                        p = new FragilePackage();
-                        break;
-                    case "large":
-                        p = new LargePackage();
-                        break;
-                    case "fragile-large":
-                        p = new FragileLargePackage();
-                        break;
-                    default:
-                        p = new Parcel();
-                        break;
-                }
-            } else {
-                p = new Parcel();
+
+            switch (type) { 
+                case "fragile":
+                    p = new FragilePackage(parts[0], parts[1], parts[2], parts[3], parts[4], pickedUp); 
+                    break;
+                case "large":
+                    p = new LargePackage(parts[0], parts[1], parts[2], parts[3], parts[4], pickedUp);
+                    break;
+                case "fragile-large":
+                    p = new FragileLargePackage(parts[0], parts[1], parts[2], parts[3], parts[4], pickedUp);
+                    break;
+                default:
+                    p = new Parcel(parts[0], parts[1], parts[2], parts[3], parts[4], pickedUp);
             }
-
-            p.setRecipientName(parts[0]);
-            p.setTrackingNumber(parts[1]);
-            p.setCarrier(parts[2]);
-            p.setDateReceived(parts[3]);
-            p.setLocation(parts[4]);
-            p.setPickedUp(Boolean.parseBoolean(parts[5]));
-
             packages.add(p);
+              
         }
         fileReader.close();
         System.out.println("Loaded " + packages.size() + " from disk.");

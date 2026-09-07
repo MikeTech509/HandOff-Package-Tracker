@@ -33,7 +33,7 @@ public class PackageService {
     if (!foundAny) {
         System.out.println("All packages have been picked up! 🎉");
     }
-}
+} // End of displayPendingPackages method
 
 public static Parcel findByTrackingNumber(ArrayList<Parcel> packages, String trackingNumber){
     for(Parcel p : packages){
@@ -42,7 +42,7 @@ public static Parcel findByTrackingNumber(ArrayList<Parcel> packages, String tra
         }
     }
     return null;
-}
+} // End of findByTrackingNumber method
 
 public static void  markAsPickedUp(Scanner info, ArrayList<Parcel> packages){
     System.out.print("\nEnter the tracking number to mark as picked up: ");
@@ -62,7 +62,8 @@ public static void  markAsPickedUp(Scanner info, ArrayList<Parcel> packages){
 
     found.setPickedUp(true);
     System.out.println("Marked as picked up for: " + found.getRecipientName());
-}
+
+} // End of markAsPickedUp method
 
 
     public static void addPackage(Scanner info, ArrayList<Parcel> packages) {
@@ -93,34 +94,37 @@ public static void  markAsPickedUp(Scanner info, ArrayList<Parcel> packages){
     System.out.println(" 2 = Fragile");
     System.out.println(" 3 = Large");
     System.out.println(" 4 Fragile and Large");
-    System.out.println(" Enter type (1-3): ");
-    String typeInput = info.nextLine();
-
+    System.out.print(" Enter type (1-4): ");
+    
+    String typeInput = info.nextLine(); // Read the user's input for package type
     Parcel currentParcel;
-    switch(typeInput){
-        case "2":
-            currentParcel = new FragilePackage();
-            break;
-        case "3":
-            currentParcel = new LargePackage();
-            break;
-        case "4":
-            currentParcel = new FragileLargePackage();
-            break;
-        default:
-            currentParcel = new Parcel();
-    }
 
-    currentParcel.setRecipientName(myRecipientName);
-    currentParcel.setTrackingNumber(myTrackingNumber);
-    currentParcel.setCarrier(myCarrier);
-    currentParcel.setDateReceived(myDateReceived);
-    currentParcel.setLocation(myLocation);
-    currentParcel.setPickedUp(pickedUp);
+switch(typeInput){
+    case "2":
+        currentParcel = new FragilePackage(myRecipientName, myTrackingNumber, myCarrier,
+                                             myDateReceived, myLocation, pickedUp);
+        break;
+    case "3":
+        currentParcel = new LargePackage(myRecipientName, myTrackingNumber, myCarrier,
+                                           myDateReceived, myLocation, pickedUp);
+        break;
+    case "4":
+        currentParcel = new FragileLargePackage(myRecipientName, myTrackingNumber, myCarrier,
+                                                  myDateReceived, myLocation, pickedUp);
+        break;
+    default:
+        currentParcel = new Parcel(myRecipientName, myTrackingNumber, myCarrier,
+                                     myDateReceived, myLocation, pickedUp);
+        break;
 
-    packages.add(currentParcel);
+} // End of switch statement
+
+
+packages.add(currentParcel);
     System.out.println("Package added successfully!");
-}
+
+} // End of addPackage method
+
 
 public static void displayAllPackages(ArrayList<Parcel> packages) {
     if (packages.isEmpty()) {
@@ -134,7 +138,8 @@ public static void displayAllPackages(ArrayList<Parcel> packages) {
         System.out.println();
     }
     System.out.println("Total packages: " + packages.size());
-}
+
+} // End of displayAllPackages method
 
 
 
@@ -153,7 +158,8 @@ public static void displayAllPackages(ArrayList<Parcel> packages) {
         if(!foundAny){
             System.out.println("No Packages found for: " + searchTerm);
         }
-    }
+    } // End of searchByRecipient method
+
 
     static void searchByTrackingNumber(ArrayList<Parcel> packages, String searchTerm ){
         boolean foundAny = false;
@@ -171,4 +177,4 @@ public static void displayAllPackages(ArrayList<Parcel> packages) {
         }
     }
 
-}
+} // End of PackageService class
