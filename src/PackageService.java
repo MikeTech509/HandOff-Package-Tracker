@@ -69,60 +69,44 @@ public static void  markAsPickedUp(Scanner info, ArrayList<Parcel> packages){
     public static void addPackage(Scanner info, ArrayList<Parcel> packages) {
     System.out.println("\n--- Adding a new package ---");
 
-    System.out.print("Enter a recipient name: ");
-    String myRecipientName = info.nextLine();
-
-    System.out.print("Enter a tracking number: ");
-    String myTrackingNumber = info.nextLine();
-
-    System.out.print("Enter the Carrier: ");
-    String myCarrier = info.nextLine();
-
-    System.out.print("Enter the date received: ");
-    String myDateReceived = info.nextLine();
-
-    System.out.print("Enter the location: ");
-    String myLocation = info.nextLine();
-
-    System.out.print("Is it picked up? (yes/no): ");
-    String input = info.nextLine();
-    boolean pickedUp = input.equalsIgnoreCase("yes");
+    String myRecipientName = InputHelper.promptNonEmpty(info, "Enter a recipient name: ");
+    String myTrackingNumber = InputHelper.promptTrackingNumber(info);
+    String myCarrier = InputHelper.promptNonEmpty(info, "Enter the Carrier: ");
+    String myDateReceived = InputHelper.promptNonEmpty(info, "Enter the date received: ");
+    String myLocation = InputHelper.promptNonEmpty(info, "Enter the location: ");
+    boolean pickedUp = InputHelper.promptYesNo(info, "Is it picked up? (yes/no): ");
 
     // Ask the user what type of package it is
     System.out.println("Package type: ");
     System.out.println(" 1 = Regular");
     System.out.println(" 2 = Fragile");
     System.out.println(" 3 = Large");
-    System.out.println(" 4 Fragile and Large");
-    System.out.print(" Enter type (1-4): ");
-    
-    String typeInput = info.nextLine(); // Read the user's input for package type
+    System.out.println(" 4 = Fragile and Large");
+    System.out.print("Enter type (1-4): ");
+    String typeInput = info.nextLine();
+
     Parcel currentParcel;
+    switch(typeInput){
+        case "2":
+            currentParcel = new FragilePackage(myRecipientName, myTrackingNumber, myCarrier,
+                                                 myDateReceived, myLocation, pickedUp);
+            break;
+        case "3":
+            currentParcel = new LargePackage(myRecipientName, myTrackingNumber, myCarrier,
+                                               myDateReceived, myLocation, pickedUp);
+            break;
+        case "4":
+            currentParcel = new FragileLargePackage(myRecipientName, myTrackingNumber, myCarrier,
+                                                      myDateReceived, myLocation, pickedUp);
+            break;
+        default:
+            currentParcel = new Parcel(myRecipientName, myTrackingNumber, myCarrier,
+                                         myDateReceived, myLocation, pickedUp);
+            break;
+    }
 
-switch(typeInput){
-    case "2":
-        currentParcel = new FragilePackage(myRecipientName, myTrackingNumber, myCarrier,
-                                             myDateReceived, myLocation, pickedUp);
-        break;
-    case "3":
-        currentParcel = new LargePackage(myRecipientName, myTrackingNumber, myCarrier,
-                                           myDateReceived, myLocation, pickedUp);
-        break;
-    case "4":
-        currentParcel = new FragileLargePackage(myRecipientName, myTrackingNumber, myCarrier,
-                                                  myDateReceived, myLocation, pickedUp);
-        break;
-    default:
-        currentParcel = new Parcel(myRecipientName, myTrackingNumber, myCarrier,
-                                     myDateReceived, myLocation, pickedUp);
-        break;
-
-} // End of switch statement
-
-
-packages.add(currentParcel);
+    packages.add(currentParcel);
     System.out.println("Package added successfully!");
-
 } // End of addPackage method
 
 
