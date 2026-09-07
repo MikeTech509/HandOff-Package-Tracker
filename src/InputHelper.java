@@ -63,4 +63,32 @@ public class InputHelper {
         return input.equalsIgnoreCase("yes");
     }
     
+
+    /**
+ * Repeatedly prompts until the user enters a valid integer
+ * within the given range (inclusive).
+ *
+ * @param info Scanner for reading user input
+ * @param prompt the message to display
+ * @param min the smallest acceptable value
+ * @param max the largest acceptable value
+ * @return the valid integer choice
+ */
+public static int promptMenuChoice(Scanner info, String prompt, int min, int max) {
+    while (true) {
+        System.out.print(prompt);
+        String input = info.nextLine();
+
+        try {
+            int choice = Integer.parseInt(input.trim());
+            if (choice >= min && choice <= max) {
+                return choice;
+            }
+            System.out.println("⚠️  Please enter a number between " + min + " and " + max + ".");
+        } catch (NumberFormatException e) {
+            System.out.println("⚠️  That's not a valid number. Please try again.");
+        }
+    }
+} // End of promptMenuChoice method
+
 } // End of InputHelper class

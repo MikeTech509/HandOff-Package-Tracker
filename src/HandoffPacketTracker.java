@@ -40,8 +40,7 @@ public class HandoffPacketTracker {
         System.out.println("7. Quit");
         System.out.print("Choose an option (1-7): ");
 
-        int choice = info.nextInt();
-        info.nextLine();   // ← don't forget the newline fix!
+        int choice = InputHelper.promptMenuChoice(info, "Choose an option (1-7): ", 1, 7);
 
         switch (choice) {
             case 1:
