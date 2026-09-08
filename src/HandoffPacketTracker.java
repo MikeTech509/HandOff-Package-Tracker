@@ -31,16 +31,17 @@ public class HandoffPacketTracker {
         System.out.println("║   HANDOFF — Package Tracker  v1.0      ║");
         System.out.println("║   Every package. Every handoff.        ║");
         System.out.println("╚════════════════════════════════════════╝");
+
         System.out.println("1. Add a package");
         System.out.println("2. Search by recipient name");
         System.out.println("3. Search by tracking number");
         System.out.println("4. Show all packages");
         System.out.println("5. Mark a package as picked up");
         System.out.println("6. Show pending pickups");
-        System.out.println("7. Quit");
-        System.out.print("Choose an option (1-7): ");
+        System.out.println("7. Delete a package");
+        System.out.println("8. Quit");
 
-        int choice = InputHelper.promptMenuChoice(info, "Choose an option (1-7): ", 1, 7);
+        int choice = InputHelper.promptMenuChoice(info, "Choose an option (1-8): ", 1, 8);
 
         switch (choice) {
             case 1:
@@ -68,20 +69,22 @@ public class HandoffPacketTracker {
                 PackageService.displayPendingPackages(myPackages);
                 break;
             case 7:
+                PackageService.deletePackage(info, myPackages);      
+                FileStorage.savePackages(myPackages);                 
+                break;
+            case 8:
                 FileStorage.savePackages(myPackages);
                 running = false;
                 System.out.println("Goodbye!");
                 break;
             default:
-                System.out.println("Invalid choice. Please pick 1-7.");
+                System.out.println("Invalid choice. Please pick 1-8.");
         }
-    }
+    } // end of while loop
 
-    info.close();
-}
+    info.close();  // Close the scanner to prevent resource leaks
 
+} // end of main method
 
-
-    
-}
+} // end of HandoffPacketTracker class
  

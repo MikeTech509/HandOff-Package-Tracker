@@ -110,6 +110,106 @@ public static void  markAsPickedUp(Scanner info, ArrayList<Parcel> packages){
 } // End of addPackage method
 
 
+/**
+ * Prompts the user for a tracking number, shows the matching package,
+ * and deletes it after confirmation.
+ * <p>
+ * If no package matches, prints an error and returns without changes.
+ *
+ * @param info Scanner for reading user input
+ * @param packages the collection to delete from
+ */
+
+public static void deletePackage(Scanner info, ArrayList<Parcel> packages) {
+        System.out.println("\nDelete by:");
+        System.out.println(" 1 = Tracking number");
+        System.out.println(" 2 = Recipient name");
+        System.out.print("Choose (1-2): ");
+        String choice = info.nextLine();
+
+        if (choice.equals("2")) {
+            deletePackageByName(info, packages);
+        } else {
+            deletePackageByTrackingNumber(info, packages);
+        }
+    } // End of deletePackage method
+
+private  static void deletePackageByTrackingNumber(Scanner info, ArrayList<Parcel> packages) {
+    System.out.print("\nEnter the tracking number to delete: ");
+    String trackingNumber = info.nextLine();
+
+    Parcel found = findByTrackingNumber(packages, trackingNumber);
+
+    if (found == null) {
+        System.out.println("No package found with tracking number: " + trackingNumber);
+        return;
+    }
+
+    System.out.println("\nFound this package:");
+    found.displayInfo();
+
+    boolean confirmed = InputHelper.promptYesNo(info, "\nAre you sure you want to delete this package? (yes/no): ");
+
+    if (!confirmed) {
+        System.out.println("Delete cancelled.");
+        return;
+    }
+
+    packages.remove(found);
+    System.out.println("Package deleted successfully.");
+
+} // End of deletePackageByTrackingNumber method
+
+private static void deletePackageByName(Scanner info, ArrayList<Parcel> packages) {
+        System.out.print("\nEnter the recipient name to delete: ");
+        String searchTerm = info.nextLine();
+
+        ArrayList<Parcel> matches = new ArrayList<>();
+        for (Parcel p : packages) {
+            if (p.getRecipientName().toLowerCase().contains(searchTerm.toLowerCase())) {
+                matches.add(p);
+            }
+        }
+
+        if (matches.isEmpty()) {
+            System.out.println("No packages found for: " + searchTerm);
+            return;
+        }
+
+        Parcel found;
+        if (matches.size() == 1) {
+            found = matches.get(0);
+        } else {
+            System.out.println("\nMultiple packages match \"" + searchTerm + "\":\n");
+            for (Parcel p : matches) {
+                p.displayInfo();
+                System.out.println();
+            }
+            System.out.print("Enter the tracking number of the one to delete: ");
+            String trackingNumber = info.nextLine();
+            found = findByTrackingNumber(matches, trackingNumber);
+
+            if (found == null) {
+                System.out.println("No match found with that tracking number among the results.");
+                return;
+            }
+        }
+
+        System.out.println("\nFound this package:");
+        found.displayInfo();
+
+        boolean confirmed = InputHelper.promptYesNo(info, "\nAre you sure you want to delete this package? (yes/no): ");
+
+        if (!confirmed) {
+            System.out.println("Delete cancelled.");
+            return;
+        }
+
+        packages.remove(found);
+        System.out.println("Package deleted successfully.");
+    } // End of deletePackageByName method
+
+
 public static void displayAllPackages(ArrayList<Parcel> packages) {
     if (packages.isEmpty()) {
         System.out.println("\nNo packages in the system yet.");
