@@ -72,7 +72,16 @@ public static void  markAsPickedUp(Scanner info, ArrayList<Parcel> packages){
     String myRecipientName = InputHelper.promptNonEmpty(info, "Enter a recipient name: ");
     String myTrackingNumber = InputHelper.promptTrackingNumber(info);
     String myCarrier = InputHelper.promptNonEmpty(info, "Enter the Carrier: ");
-    String myDateReceived = InputHelper.promptNonEmpty(info, "Enter the date received: ");
+
+    // Ask the user if they want to use today's date or enter a custom date
+    boolean useToday = InputHelper.promptYesNo(info, "Use today's date? (yes/no): ");
+String myDateReceived;
+if (useToday) {
+    myDateReceived = InputHelper.getTodayFormatted();
+    System.out.println("Date received set to: " + myDateReceived);
+} else {
+    myDateReceived = InputHelper.promptValidDate(info); 
+}
     String myLocation = InputHelper.promptNonEmpty(info, "Enter the location: ");
     boolean pickedUp = InputHelper.promptYesNo(info, "Is it picked up? (yes/no): ");
 
