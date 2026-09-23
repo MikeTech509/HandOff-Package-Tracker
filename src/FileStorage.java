@@ -1,5 +1,3 @@
-
-
 /**
  * Handles persistent storage of packages to and from disk.
  * <p>
@@ -10,80 +8,90 @@
  * @author Miketchly-Zar Jean-Francois
  */
 
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class FileStorage {
 
     static final String DATA_FILE = "data/handoff_data.csv";
 
-public static void savePackages(ArrayList<Parcel> packages) {
-    try {
-        new File("data").mkdirs();
-        PrintWriter writer = new PrintWriter(new FileWriter(DATA_FILE));
-        for (Parcel p : packages) {
-            writer.println(p.getRecipientName() + "," +
-                           p.getTrackingNumber() + "," +
-                           p.getCarrier() + "," +
-                           p.getDateReceived() + "," +
-                           p.getLocation() + "," +
-                           p.isPickedUp() + "," +
-                           (p instanceof FragileLargePackage ? "fragile-large" 
-                            : p instanceof FragilePackage ? "fragile"
-                            : p instanceof LargePackage ? "large" 
-                            :"regular"));
-        }
-        writer.close();
-        System.out.println("Saved " + packages.size() + " packages to handoff_data.csv");
-    } catch (IOException e) {
-        System.out.println("Error Message: " + e.getMessage());
-    }
-}
-
-public static void loadPackages(ArrayList<Parcel> packages) {
-    File file = new File(DATA_FILE);
-    if (!file.exists()) {
-        System.out.println("Starting fresh! No saved data found.");
-        return;
-    }
-    try {
-        Scanner fileReader = new Scanner(file);
-        while (fileReader.hasNextLine()) {
-            String line = fileReader.nextLine();
-            String[] parts = line.split(",");
-
-            boolean pickedUp = Boolean.parseBoolean(parts[5]); 
-            String type = parts.length >= 7 ? parts [6] : "regular"; 
-        
-            Parcel p;
-
-            switch (type) { 
-                case "fragile":
-                    p = new FragilePackage(parts[0], parts[1], parts[2], parts[3], parts[4], pickedUp); 
-                    break;
-                case "large":
-                    p = new LargePackage(parts[0], parts[1], parts[2], parts[3], parts[4], pickedUp);
-                    break;
-                case "fragile-large":
-                    p = new FragileLargePackage(parts[0], parts[1], parts[2], parts[3], parts[4], pickedUp);
-                    break;
-                default:
-                    p = new Parcel(parts[0], parts[1], parts[2], parts[3], parts[4], pickedUp);
+    public static void savePackages(ArrayList<Parcel> packages) {
+        try {
+            new File("data").mkdirs();
+            PrintWriter writer = new PrintWriter(new FileWriter(DATA_FILE));
+            for (Parcel p : packages) {
+                writer.println(p.getRecipientName() + "," +
+                               p.getTrackingNumber() + "," +
+                               p.getCarrier() + "," +
+                               p.getDateReceived() + "," +
+                               p.getLocation() + "," +
+                               p.isPickedUp() + "," +
+                               (p instanceof FragileLargePackage ? "fragile-large"
+                                : p instanceof FragilePackage ? "fragile"
+                                : p instanceof LargePackage ? "large"
+                                : "regular"));
             }
-            packages.add(p);
-              
+            writer.close();
+            System.out.println("Saved " + packages.size() + " packages to handoff_data.csv");
+        } catch (IOException e) {
+            System.out.println("Error Message: " + e.getMessage());
         }
-        fileReader.close();
-        System.out.println("Loaded " + packages.size() + " from disk.");
-    } catch (FileNotFoundException e) {
-        System.out.println("Error loading: " + e.getMessage());
     }
-}
 
+    public static void loadPackages(ArrayList<Parcel> packages, HashMap<String, Parcel> packagesByTracking) {
+        File file = new File(DATA_FILE);
+        if (!file.exists()) {
+            System.out.println("Starting fresh! No saved data found.");
+            return;
+        }
+        try {
+            Scanner fileReader = new Scanner(file);
+            while (fileReader.hasNextLine()) {
+                String line = fileReader.nextLine();
+
+                if (line.trim().isEmpty()) {
+                    continue;
+                }
+
+                String[] parts = line.split(",");
+
+                if (parts.length < 6) {
+                    System.out.println("⚠️  Skipping corrupted line (not enough fields): " + line);
+                    continue;
+                }
+
+                boolean pickedUp = Boolean.parseBoolean(parts[5]);
+                String type = parts.length >= 7 ? parts[6] : "regular";
+
+                Parcel p;
+
+                switch (type) {
+                    case "fragile":
+                        p = new FragilePackage(parts[0], parts[1], parts[2], parts[3], parts[4], pickedUp);
+                        break;
+                    case "large":
+                        p = new LargePackage(parts[0], parts[1], parts[2], parts[3], parts[4], pickedUp);
+                        break;
+                    case "fragile-large":
+                        p = new FragileLargePackage(parts[0], parts[1], parts[2], parts[3], parts[4], pickedUp);
+                        break;
+                    default:
+                        p = new Parcel(parts[0], parts[1], parts[2], parts[3], parts[4], pickedUp);
+                }
+
+                packages.add(p);
+                packagesByTracking.put(p.getTrackingNumber().toUpperCase(), p);
+            }
+            fileReader.close();
+            System.out.println("Loaded " + packages.size() + " packages from disk.");
+        } catch (FileNotFoundException e) {
+            System.out.println("Error loading: " + e.getMessage());
+        }
+    }
 }
