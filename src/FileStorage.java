@@ -30,7 +30,7 @@ public class FileStorage {
                            p.getCarrier() + "," +
                            p.getDateReceived() + "," +
                            p.getLocation() + "," +
-                           p.isPickedUp() + "," +
+                           p.getStatus().name() + "," +
                            (p instanceof FragileLargePackage ? "fragile-large"
                             : p instanceof FragilePackage ? "fragile"
                             : p instanceof LargePackage ? "large"
@@ -64,23 +64,23 @@ public class FileStorage {
                     continue;
                 }
 
-                boolean pickedUp = Boolean.parseBoolean(parts[5]);
+                PackageStatus status = parseStatus(parts[5]);
                 String type = parts.length >= 7 ? parts[6] : "regular";
 
                 Parcel p;
 
                 switch (type) {
                     case "fragile":
-                        p = new FragilePackage(parts[0], parts[1], parts[2], parts[3], parts[4], pickedUp);
+                        p = new FragilePackage(parts[0], parts[1], parts[2], parts[3], parts[4], status);
                         break;
                     case "large":
-                        p = new LargePackage(parts[0], parts[1], parts[2], parts[3], parts[4], pickedUp);
+                        p = new LargePackage(parts[0], parts[1], parts[2], parts[3], parts[4], status);
                         break;
                     case "fragile-large":
-                        p = new FragileLargePackage(parts[0], parts[1], parts[2], parts[3], parts[4], pickedUp);
+                        p = new FragileLargePackage(parts[0], parts[1], parts[2], parts[3], parts[4], status);
                         break;
                     default:
-                        p = new Parcel(parts[0], parts[1], parts[2], parts[3], parts[4], pickedUp);
+                        p = new Parcel(parts[0], parts[1], parts[2], parts[3], parts[4], status);
                 }
 
                 packages.add(p);
@@ -92,4 +92,19 @@ public class FileStorage {
             System.out.println("Error loading: " + e.getMessage());
         }
     }
+
+    private static PackageStatus parseStatus(String text) {
+    if (text.equalsIgnoreCase("true")) {
+        return PackageStatus.RELEASED;
+    }
+    if (text.equalsIgnoreCase("false")) {
+        return PackageStatus.ARRIVED;
+    }
+    try {
+        return PackageStatus.valueOf(text.trim().toUpperCase());
+    } catch (IllegalArgumentException e) {
+        System.out.println("⚠️  Unknown status \"" + text + "\", using ARRIVED.");
+        return PackageStatus.ARRIVED;
+    }
+}
 }

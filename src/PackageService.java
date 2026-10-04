@@ -69,9 +69,34 @@ public class PackageService {
             return;
         }
 
-        found.setPickedUp(true);
+        found.setStatus(PackageStatus.RELEASED);
         System.out.println("Marked as picked up for: " + found.getRecipientName());
     } // End of markAsPickedUp method
+
+    public static void updateStatus(Scanner info, HashMap<String, Parcel> packagesByTracking) {
+    System.out.print("\nEnter the tracking number to update: ");
+    String trackingNumber = info.nextLine();
+
+    Parcel found = findByTrackingNumber(packagesByTracking, trackingNumber);
+
+    if (found == null) {
+        System.out.println("No package found with tracking number: " + trackingNumber);
+        return;
+    }
+
+    System.out.println("Current status: " + found.getStatus().getLabel());
+    System.out.println("Choose a new status:");
+
+    PackageStatus[] stages = PackageStatus.values();
+    for (int i = 0; i < stages.length; i++) {
+        System.out.println(" " + (i + 1) + " = " + stages[i].getLabel());
+    }
+    int choice = InputHelper.promptMenuChoice(info, "Enter choice (1-" + stages.length + "): ", 
+                                                1, stages.length);
+    PackageStatus newStatus = stages[choice - 1];
+    found.setStatus(newStatus);
+    System.out.println("Status updated to: " + newStatus.getLabel());
+}
 
     public static void addPackage(Scanner info, ArrayList<Parcel> packages,
                                     HashMap<String, Parcel> packagesByTracking) {
@@ -92,6 +117,7 @@ public class PackageService {
 
         String myLocation = InputHelper.promptNonEmpty(info, "Enter the location: ");
         boolean pickedUp = InputHelper.promptYesNo(info, "Is it picked up? (yes/no): ");
+        PackageStatus status = pickedUp ? PackageStatus.RELEASED : PackageStatus.ARRIVED;
 
         System.out.println("Package type: ");
         System.out.println(" 1 = Regular");
@@ -105,19 +131,19 @@ public class PackageService {
         switch (typeInput) {
             case "2":
                 currentParcel = new FragilePackage(myRecipientName, myTrackingNumber, myCarrier,
-                                                     myDateReceived, myLocation, pickedUp);
+                                                     myDateReceived, myLocation, status);
                 break;
             case "3":
                 currentParcel = new LargePackage(myRecipientName, myTrackingNumber, myCarrier,
-                                                   myDateReceived, myLocation, pickedUp);
+                                                   myDateReceived, myLocation, status);
                 break;
             case "4":
                 currentParcel = new FragileLargePackage(myRecipientName, myTrackingNumber, myCarrier,
-                                                          myDateReceived, myLocation, pickedUp);
+                                                          myDateReceived, myLocation, status);
                 break;
             default:
                 currentParcel = new Parcel(myRecipientName, myTrackingNumber, myCarrier,
-                                             myDateReceived, myLocation, pickedUp);
+                                             myDateReceived, myLocation, status);
         }
 
         packages.add(currentParcel);

@@ -42,9 +42,10 @@ public class HandoffPacketTracker {
         System.out.println("5. Mark a package as picked up");
         System.out.println("6. Show pending pickups");
         System.out.println("7. Delete a package");
-        System.out.println("8. Quit");
+        System.out.println("8. Update package status");
+        System.out.println("9. Quit");
 
-        int choice = InputHelper.promptMenuChoice(info, "Choose an option (1-8): ", 1, 8);
+        int choice = InputHelper.promptMenuChoice(info, "Choose an option (1-9): ", 1, 9);
 
         switch (choice) {
     case 1:
@@ -76,12 +77,16 @@ public class HandoffPacketTracker {
         FileStorage.savePackages(myPackages);
         break;
     case 8:
+        PackageService.updateStatus(info, packagesByTracking);
+        FileStorage.savePackages(myPackages);
+        break;
+    case 9:
         FileStorage.savePackages(myPackages);
         running = false;
         System.out.println("Goodbye!");
         break;
     default:
-        System.out.println("Invalid choice. Please pick 1-8.");
+        System.out.println("Invalid choice. Please pick 1-9.");
 }
     } // end of while loop
 

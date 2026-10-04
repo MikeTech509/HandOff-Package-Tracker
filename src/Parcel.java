@@ -18,15 +18,15 @@ public class Parcel {
     private String carrier;
     private String dateReceived;
     private String location;
-    private boolean isPickedUp;
+    private PackageStatus status = PackageStatus.ARRIVED;
 
-    public Parcel(String recipientName, String trackingNumber, String carrier, String dateReceived, String location, boolean isPickedUp){
+    public Parcel(String recipientName, String trackingNumber, String carrier, String dateReceived, String location, PackageStatus status){
         setRecipientName(recipientName);
         setTrackingNumber(trackingNumber);
         setCarrier(carrier);
         setDateReceived(dateReceived);
         setLocation(location);
-        setPickedUp(isPickedUp);    
+        setStatus(status);
     }
 
 
@@ -50,8 +50,12 @@ public class Parcel {
         return location;
     }
 
+    public PackageStatus getStatus(){
+    return status;
+}
+
     public boolean isPickedUp(){
-        return isPickedUp;
+        return status == PackageStatus.RELEASED;
     }
 
     public void setRecipientName(String recipientName) {
@@ -85,8 +89,6 @@ public class Parcel {
     }
 
 
-    
-
     public void setLocation(String location) {
     if (location == null || location.trim().isEmpty()) {
         System.out.println("⚠️  Location can't be empty. Change ignored.");
@@ -95,9 +97,13 @@ public class Parcel {
     this.location = location;
 }
 
-    public void setPickedUp(boolean isPickedUp){
-        this.isPickedUp = isPickedUp;
+    public void setStatus(PackageStatus status) {
+    if (status == null) {
+        System.out.println("⚠️  Status can't be null. Change ignored.");
+        return;
     }
+    this.status = status;
+}
 
     public void setDateReceived(String dateReceived) {
     if (dateReceived == null || dateReceived.trim().isEmpty()) {
@@ -113,6 +119,6 @@ public class Parcel {
         System.out.println("Carrier: " + carrier);
         System.out.println("Date received: " + dateReceived);
         System.out.println("Location: " + location);
-        System.out.println("Picked up: " + (isPickedUp ? "yes" : "no"));
+        System.out.println("Status: " + status.getLabel());
     }
 }

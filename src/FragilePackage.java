@@ -1,8 +1,8 @@
 public class FragilePackage extends Parcel implements Fragile{
 
-    public FragilePackage(String recipientName, String trackingNumber, String carrier, String dateReceived, String location, boolean isPickedUp){
+    public FragilePackage(String recipientName, String trackingNumber, String carrier, String dateReceived, String location, PackageStatus status){
         
-        super(recipientName, trackingNumber, carrier, dateReceived, location, isPickedUp);
+        super(recipientName, trackingNumber, carrier, dateReceived, location, status);
 
     } // Constructor for FragilePackage class
 
