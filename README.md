@@ -1,6 +1,6 @@
 # Handoff — Package Tracker
 
-A Java package tracker for front-desk mailrooms. Log arrivals from any carrier, search by name or tracking number, mark packages as picked up or delete them, and automatically flag fragile or oversized packages for special handling.
+A Java console app for front-desk mailrooms. Log arrivals from any carrier, search by name or tracking number, move packages through pickup stages, and flag fragile or oversized packages for special handling.
 
 Built as a self-taught learning project — one concept, one commit at a time.
 
@@ -10,86 +10,106 @@ Built as a self-taught learning project — one concept, one commit at a time.
 
 Front desks handle packages from every direction — Amazon, UPS, FedEx, USPS, and more. When someone asks *"did my package arrive?"*, staff shouldn't be digging through boxes or a paper log.
 
-Handoff is a lightweight console app that keeps everything in one place: who the package is for, where it's stored, when it arrived, whether it's been picked up, and whether it needs special handling. Built for a real small-business need (under 20 packages/day). No database, no internet, no setup.
+Handoff is a lightweight console app that keeps everything in one place: who the package is for, where it's stored, when it arrived, what stage it's in, and whether it needs special handling. Built for a real small-business need (under 20 packages a day). No database, no internet, no setup.
 
 ## Features
 
 - Log packages with recipient, tracking number, carrier, date, and location
-- **Auto-timestamp arrivals** with today's date, or enter one manually (validated as a real calendar date)
+- Auto-timestamp arrivals, or enter a date manually (validated as a real calendar date)
 - Search by recipient name or tracking number (partial, case-insensitive)
-- Mark packages as picked up
-- **Delete packages** by tracking number or recipient name — with disambiguation when multiple names match
-- View pending pickups only
-- **Special package types** — fragile and/or oversized packages automatically display handling warnings
-- Input validation with re-prompts — the app never accepts empty or malformed data
-- Crash-proof menu — invalid input is rejected gracefully, never crashes the app
-- Persistent storage — packages and their types survive across sessions
-- Cross-platform — runs identically on Mac and Windows
+- Track each package through four stages: **Arrived → Notified → Ready for pickup → Released**
+- Mark a package as picked up (a shortcut for the Released stage)
+- Delete packages by tracking number or recipient name, with a choice when several names match
+- View pending pickups (every package not yet released)
+- Special package types — fragile, large, or both — with handling warnings wherever the package appears
+- Input validation with re-prompts: empty or malformed data is never accepted
+- Crash-proof menu: invalid input is rejected, never fatal
+- Fast tracking-number lookup using a HashMap index
+- Persistent storage — type and status survive between sessions
+- Older save files still load (the old true/false pickup values are converted automatically)
+- Runs the same on Mac and Windows
 
 ## How It Works
 
-Launch Handoff and a menu appears with 8 options: add, search by recipient, search by tracking, show all, mark picked up, show pending, delete, or quit.
+Launch Handoff and a menu appears with nine options:
 
-When adding a package, you choose its type — regular, fragile, oversized, or both — and each displays its own warning automatically wherever it appears, in search results or the full listing.
+1. Add a package
+2. Search by recipient name
+3. Search by tracking number
+4. Show all packages
+5. Mark a package as picked up
+6. Show pending pickups
+7. Delete a package
+8. Update package status
+9. Quit
 
-All packages are saved to a local CSV file after every change. Close the app, come back tomorrow — everything's still there, including package type.
+When adding a package, you choose its type — regular, fragile, large, or both — and the matching warnings appear wherever that package is shown.
+
+Packages are saved to a local CSV file after every change. Close the app, come back tomorrow, and everything is still there. The `data/` folder is not committed to Git, so a fresh clone starts empty and creates the file on the first save.
 
 ## Project Structure
-src/
-├── HandoffPacketTracker.java Main entry point + menu loop
-├── PackageService.java Add, search, mark, delete, and filter operations
-├── FileStorage.java CSV save/load logic
-├── InputHelper.java Reusable input validation and re-prompt helpers
-├── Parcel.java The base package class
-├── FragilePackage.java Extends Parcel — fragile handling
-├── LargePackage.java Extends Parcel — oversized handling
-├── FragileLargePackage.java Extends Parcel — both behaviors combined
-├── Fragile.java Interface defining fragile-warning behavior
-└── Large.java Interface defining large-warning behavior
 
+```
+src/
+├── HandoffPacketTracker.java   Main entry point and menu loop
+├── PackageService.java         Add, search, update, delete, and filter operations
+├── FileStorage.java            CSV save and load
+├── InputHelper.java            Reusable validation and re-prompt helpers
+├── Parcel.java                 The base package class
+├── PackageStatus.java          Enum: the four workflow stages
+├── FragilePackage.java         Extends Parcel — fragile handling
+├── LargePackage.java           Extends Parcel — oversized handling
+├── FragileLargePackage.java    Extends Parcel — both behaviors
+├── Fragile.java                Interface for the fragile warning
+└── Large.java                  Interface for the large warning
+```
 
 ## Getting Started
 
 Requires Java 17 or newer.
 
+```
 git clone https://github.com/MikeTech509/HandOff-Package-Tracker.git
 cd HandOff-Package-Tracker
-javac src/*.java -d out
+javac -d out src/*.java
 java -cp out HandoffPacketTracker
-
+```
 
 ## Concepts Applied
 
-Handoff is a working exercise in real Java concepts, applied to solve an actual problem:
+- **Encapsulation** — private fields with validated setters
+- **Inheritance** — three package types extend `Parcel`
+- **Polymorphism** — the same `displayInfo()` call behaves differently by actual type
+- **Interfaces with default methods** — `Fragile` and `Large` let one class combine behaviors
+- **Enums** — `PackageStatus` replaces a yes/no flag with named stages the compiler can check
+- **Constructors** — `super()` chaining, so an object is valid the moment it exists
+- **Collections** — an `ArrayList` for ordered iteration and a `HashMap` for instant lookup by tracking number
+- **Exception handling and `try-with-resources`** — bad input and file errors are handled, and files always close
+- **Defensive loading** — blank or malformed CSV lines are skipped, and old file formats are converted
+- Static utility classes, file I/O, and Git workflow across two machines
 
-- **Encapsulation** — private fields with validated getters/setters
-- **Inheritance** — `FragilePackage`, `LargePackage`, and `FragileLargePackage` all extend `Parcel`
-- **Polymorphism** — the same method call produces different behavior depending on the actual object type
-- **Interfaces with default methods** — `Fragile` and `Large` let a single class combine multiple behaviors without the limits of single inheritance
-- **Constructors** — parameterized construction with `super()` chaining, guaranteeing every object is valid the moment it's created
-- **Defensive programming** — malformed input, out-of-range menu choices, and corrupted data lines are all caught and handled gracefully instead of crashing
-- **Exception handling** — `try/catch` for invalid numbers (`NumberFormatException`) and invalid dates (`DateTimeParseException`)
-- File I/O, CSV serialization, and type-aware persistence using `instanceof`
-- Cross-platform file handling and Git workflow across two machines
+## Known Limitations
+
+- The CSV format can't store commas inside a field, such as "Smith, John" — a database would remove this limit
+- Duplicate tracking numbers are not yet blocked when adding a package
 
 ## Roadmap
 
 **Done**
-- [x] Full CRUD (add, search, mark picked up, delete, view all/pending)
-- [x] File persistence with type-aware CSV serialization
-- [x] Encapsulation, inheritance, polymorphism, and interfaces
-- [x] Constructors for guaranteed-valid object creation
-- [x] Input-layer validation with re-prompts
-- [x] Crash-proof menu input
-- [x] Auto-timestamp with validated manual date entry
-- [x] Delete by tracking number or recipient name
+- [x] Full CRUD: add, search, update status, delete
+- [x] Four-stage status workflow using an enum
+- [x] Type-aware, backward-compatible CSV storage
+- [x] Constructors, input validation, and a crash-proof menu
+- [x] Auto-timestamps with validated manual dates
+- [x] HashMap index for fast lookup
 
 **Next**
-- [ ] HashMap for fast tracking-number lookup
+- [ ] Duplicate tracking-number check
+- [ ] Edit an existing package
+- [ ] Email notifications (will move packages to Notified)
+- [ ] SQLite database
 - [ ] Unit tests with JUnit
-- [ ] SQLite database backend
-- [ ] Spring Boot REST API
-- [ ] Web or GUI interface
+- [ ] GUI or web interface
 
 ## About the Author
 
