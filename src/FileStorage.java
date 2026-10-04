@@ -22,27 +22,25 @@ public class FileStorage {
     static final String DATA_FILE = "data/handoff_data.csv";
 
     public static void savePackages(ArrayList<Parcel> packages) {
-        try {
-            new File("data").mkdirs();
-            PrintWriter writer = new PrintWriter(new FileWriter(DATA_FILE));
-            for (Parcel p : packages) {
-                writer.println(p.getRecipientName() + "," +
-                               p.getTrackingNumber() + "," +
-                               p.getCarrier() + "," +
-                               p.getDateReceived() + "," +
-                               p.getLocation() + "," +
-                               p.isPickedUp() + "," +
-                               (p instanceof FragileLargePackage ? "fragile-large"
-                                : p instanceof FragilePackage ? "fragile"
-                                : p instanceof LargePackage ? "large"
-                                : "regular"));
-            }
-            writer.close();
-            System.out.println("Saved " + packages.size() + " packages to handoff_data.csv");
-        } catch (IOException e) {
-            System.out.println("Error Message: " + e.getMessage());
+    new File("data").mkdirs();
+    try (PrintWriter writer = new PrintWriter(new FileWriter(DATA_FILE))) {
+        for (Parcel p : packages) {
+            writer.println(p.getRecipientName() + "," +
+                           p.getTrackingNumber() + "," +
+                           p.getCarrier() + "," +
+                           p.getDateReceived() + "," +
+                           p.getLocation() + "," +
+                           p.isPickedUp() + "," +
+                           (p instanceof FragileLargePackage ? "fragile-large"
+                            : p instanceof FragilePackage ? "fragile"
+                            : p instanceof LargePackage ? "large"
+                            : "regular"));
         }
+        System.out.println("Saved " + packages.size() + " packages to handoff_data.csv");
+    } catch (IOException e) {
+        System.out.println("Error Message: " + e.getMessage());
     }
+}
 
     public static void loadPackages(ArrayList<Parcel> packages, HashMap<String, Parcel> packagesByTracking) {
         File file = new File(DATA_FILE);
