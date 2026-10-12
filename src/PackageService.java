@@ -104,6 +104,13 @@ public class PackageService {
 
         String myRecipientName = InputHelper.promptNonEmpty(info, "Enter a recipient name: ");
         String myTrackingNumber = InputHelper.promptTrackingNumber(info);
+
+        if(packagesByTracking.containsKey(myTrackingNumber.toUpperCase())){
+            System.out.println("⚠️  A package with that tracking number already exists.");
+            return;
+        }
+
+
         String myCarrier = InputHelper.promptNonEmpty(info, "Enter the Carrier: ");
 
         boolean useToday = InputHelper.promptYesNo(info, "Use today's date? (yes/no): ");
