@@ -11,7 +11,6 @@
  * @author Miketchly-zar Jean-Francois
  */
 
-
 public class Parcel {
     private String recipientName;
     private String trackingNumber;
@@ -65,20 +64,16 @@ public class Parcel {
     }
     this.recipientName = recipientName;
 }
-
     public  void setTrackingNumber(String trackingNumber){
         if(trackingNumber == null || trackingNumber.trim().isEmpty()){
-            System.out.println("⚠️  Tracking number can't be empty. Change ignored.");
-        return;
+            throw new IllegalArgumentException("Tracking number can't be empty.");
         }
-
         if(trackingNumber.trim().length() < 5){
-            System.out.println("⚠️  Tracking number too short (min 5 characters). Change ignored.");
-        return;
-        }
+            throw new IllegalArgumentException("Tracking number must be at least 5 characters.");
+        } 
         this.trackingNumber = trackingNumber;
     }
-
+    
     public void setCarrier(String carrier){
 
         if(carrier == null || carrier.trim().isEmpty()){

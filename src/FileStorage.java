@@ -67,6 +67,8 @@ public class FileStorage {
                 PackageStatus status = parseStatus(parts[5]);
                 String type = parts.length >= 7 ? parts[6] : "regular";
 
+                try {
+
                 Parcel p;
 
                 switch (type) {
@@ -85,6 +87,10 @@ public class FileStorage {
 
                 packages.add(p);
                 packagesByTracking.put(p.getTrackingNumber().toUpperCase(), p);
+
+                } catch (IllegalArgumentException e) {
+                   System.out.println("⚠️  Skipping bad row (" + e.getMessage() + "): " + line);
+                }
             }
             fileReader.close();
             System.out.println("Loaded " + packages.size() + " packages from disk.");
