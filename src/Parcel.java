@@ -70,10 +70,9 @@ public class Parcel {
         }
         if(trackingNumber.trim().length() < 5){
             throw new IllegalArgumentException("Tracking number must be at least 5 characters.");
-        } 
+        }
         this.trackingNumber = trackingNumber;
     }
-    
     public void setCarrier(String carrier){
 
         if(carrier == null || carrier.trim().isEmpty()){
